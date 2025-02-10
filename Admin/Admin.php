@@ -191,7 +191,7 @@ class QUICK_admin{
                 <input type="hidden" name="term_image_add_new" id="term_image_add_new" value="">
                 <div style="display: flex; gap: 20px; align-items: center" >
                     <button type="button" class="button" id="upload_image_button_add_new"><?php esc_html_e('Upload Image', 'product-variation-table-with-quick-cart'); ?></button>
-                    <img id="term_image_preview_add_new" src="" alt="No Image Selected" style="max-width: 70px; height: auto; display: none; border: 1px solid lightgrey; border-radius: 5px">
+                    <div id="term_image_preview_add_new_render_from_js"></div>
                 </div>
                 <p class="description"><?php esc_html_e('Upload an image for this term.', 'product-variation-table-with-quick-cart'); ?></p>
             </div>

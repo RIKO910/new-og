@@ -53,9 +53,8 @@ jQuery(document).ready(function ($) {
                     $('#term_image_add_new').val(image_url);
 
                     // Update or show the preview image
-                    var previewImage = $('#term_image_preview_add_new');
-                    previewImage.attr('src', image_url);
-                    previewImage.show();
+                    var previewDiv = $('#term_image_preview_add_new_render_from_js');
+                    previewDiv.html('<img src="' + image_url + '" alt="Selected Image" style="max-width: 70px; height: auto; border: 1px solid lightgrey; border-radius: 5px;">');
                 });
         });
     });
