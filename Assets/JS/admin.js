@@ -1,110 +1,74 @@
 jQuery(document).ready(function ($) {
 
-    function initializeSortable() {
-        $(".variation-gallery-container").each(function () {
-            const container = $(this);
+    // Attribute Section Start
 
-            container.sortable({
-                items: ".variation-gallery-item",
-                cursor: "move",
-                placeholder: "sortable-placeholder",
-                forcePlaceholderSize: true,
-                tolerance: "pointer",
-                stop: function (event, ui) {
-                    const variationId = container.attr("id").split("-").pop();
-                    const inputField = $(`#variation-gallery-input-${variationId}`);
+    jQuery(document).ready(function ($) {
+        // Remove Image
+        $(document).on('click', '#upload_image_button_remove', function (e) {
+            e.preventDefault();
 
-                    const updatedOrder = container.find(".variation-gallery-item").map(function () {
-                        return $(this).data("image-id");
-                    }).get();
+            // Clear the hidden input value
+            $('#term_image').val('');
 
-                    inputField.val(updatedOrder.join(","));
-                },
-            });
-        });
-    }
-
-// Use a delay to ensure dynamic content is loaded
-    setTimeout(initializeSortable, 500);
-
-// Alternatively, listen for changes in the DOM
-    const observer = new MutationObserver((mutationsList, observer) => {
-        initializeSortable(); // Re-initialize sortable on DOM changes
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-
-
-    // Upload images
-    // Upload images
-    // Upload images
-    // Upload images
-    $(document).on("click", ".upload-variation-gallery-image", function (e) {
-        e.preventDefault();
-
-        const button = $(this);
-        const variationId = button.data("variation-id");
-        const inputField = $(`#variation-gallery-input-${variationId}`);
-        const galleryContainer = $(`#gallery-container-${variationId}`);
-
-        const mediaUploader = wp.media({
-            title: "Select Images",
-            button: { text: "Add to Gallery" },
-            multiple: true,
-        }).on("select", function () {
-            const attachments = mediaUploader.state().get("selection").toJSON();
-            let imageIds = inputField.val().split(",").filter(Boolean); // Get current image IDs
-
-            attachments.forEach(attachment => {
-                if (!imageIds.includes(String(attachment.id))) {
-                    imageIds.push(attachment.id); // Add new ID
-                    galleryContainer.append(`
-                    <li class="variation-gallery-item" data-image-id="${attachment.id}">
-                        <img src="${attachment.url}" alt="" width="60" height="60">
-                        <button type="button" class="variation-gallery-remove" data-image-id="${attachment.id}">&times;</button>
-                    </li>
-                `);
-                }
-            });
-
-            // Debugging: Log updated image IDs
-            console.log("Updated image IDs:", imageIds);
-
-            inputField.val(imageIds.join(",")); // Update the input field
+            // Hide the preview image
+            $('#term_image_preview').attr('src', '').hide();
         });
 
-        mediaUploader.open();
+        // Upload Image
+        $('#upload_image_button').on('click', function (e) {
+            e.preventDefault();
+            var image = wp.media({
+                title: 'Upload Image',
+                multiple: false
+            }).open()
+                .on('select', function () {
+                    var uploaded_image = image.state().get('selection').first().toJSON();
+                    var image_url = uploaded_image.url;
+
+                    // Update the hidden input value
+                    $('#term_image').val(image_url);
+
+                    // Update or show the preview image
+                    var previewImage = $('#term_image_preview');
+                    previewImage.attr('src', image_url); // Set the image URL
+                    previewImage.show(); // Ensure the image is visible
+                });
+        });
     });
 
 
+    jQuery(document).ready(function ($) {
+        $('#upload_image_button_add_new').on('click', function (e) {
+            e.preventDefault();
+            var image = wp.media({
+                title: 'Upload Image',
+                multiple: false
+            }).open()
+                .on('select', function () {
+                    var uploaded_image = image.state().get('selection').first().toJSON();
+                    console.log(uploaded_image)
+                    var image_url = uploaded_image.url;
 
+                    // Set the image URL to the hidden input field
+                    $('#term_image_add_new').val(image_url);
 
-    // Remove image
-    // Remove image
-    // Remove image
-    // Remove image
-    // Remove image
-    $(document).on("click", ".variation-gallery-remove", function () {
-        const button = $(this);
-        const imageId = button.data("image-id");
-        const container = button.closest(".variation-gallery-item");
-        const inputField = button.closest(".form-row").find("input[type=hidden][id^=variation-gallery-input-]");
-
-        // Debugging: Log current image IDs
-        console.log("Before removal:", inputField.val());
-
-        // Remove image ID from input value
-        let imageIds = inputField.val().split(",").filter(Boolean); // Ensure array
-        imageIds = imageIds.filter(id => String(id) !== String(imageId)); // Remove the selected ID
-        inputField.val(imageIds.join(",")); // Update the input field value
-
-        // Debugging: Log updated image IDs
-        console.log("After removal:", inputField.val());
-
-        // Remove the image from the DOM
-        container.remove();
+                    // Update or show the preview image
+                    var previewImage = $('#term_image_preview_add_new');
+                    previewImage.attr('src', image_url);
+                    previewImage.show();
+                });
+        });
     });
 
+    // Attribute Section End
+
+    jQuery(document).ready(function ($) {
+        if ($('.wvs-color-picker').length) {
+            $('.wvs-color-picker').wpColorPicker();
+        } else {
+
+        }
+    });
 
 });
 
