@@ -89,7 +89,7 @@ class QUICK_admin{
             }
         }
 
-        $attribute_id = isset( $attribute->attribute_id ) ? $attribute->attribute_id : ( isset( $_GET['edit'] ) ? intval( $_GET['edit'] ) : 0 );
+        $attribute_id       = isset( $attribute->attribute_id ) ? $attribute->attribute_id : ( isset( $_GET['edit'] ) ? intval( $_GET['edit'] ) : 0 );
         $display_type       = get_option( 'wc_attribute_display_type_' . $attribute_id );
         $tooltip_permission = get_option( 'wc_attribute_tooltip_permission_' . $attribute_id );
 
@@ -223,12 +223,12 @@ class QUICK_admin{
             }
         }
 
-        $display_type = get_option( 'wc_attribute_display_type_' . $attribute_id );
-        $term_id      = $term->term_id;
-        $color        = get_term_meta($term_id, 'term_color', true);
-        $secondaryColor        = get_term_meta($term_id, 'term_secondary_color', true);
-        $image        = get_term_meta($term_id, 'term_image', true);
-        $tooltip      = get_term_meta($term_id, 'term_tooltip', true);
+        $display_type   = get_option( 'wc_attribute_display_type_' . $attribute_id );
+        $term_id        = $term->term_id;
+        $color          = get_term_meta($term_id, 'term_color', true);
+        $secondaryColor = get_term_meta($term_id, 'term_secondary_color', true);
+        $image          = get_term_meta($term_id, 'term_image', true);
+        $tooltip        = get_term_meta($term_id, 'term_tooltip', true);
 
         if ($display_type === 'color') {
             ?>
@@ -254,9 +254,9 @@ class QUICK_admin{
                 <td>
                     <!-- Display the selected image -->
                     <?php if (!empty($image)): ?>
-                        <img id="term_image_preview" src="<?php echo esc_url($image); ?>" alt="Selected Image" style="max-width: 70px; height: auto; display: block; margin-bottom: 10px; border: 1px solid lightgrey; border-radius: 5px">
+                        <div id="term_image_preview_render_from_js" data-image-url="<?php echo esc_attr($image)?>"></div>
                     <?php else: ?>
-                        <img id="term_image_preview" src="" alt="No Image Selected" style="max-width: 70px; height: auto; display: none; margin-bottom: 10px; border: 1px solid lightgrey; border-radius: 5px">
+                        <div id="term_image_preview_render_from_js"></div>
                     <?php endif; ?>
 
                     <!-- Input field to update image -->
@@ -288,7 +288,7 @@ class QUICK_admin{
      * @since 1.0.3
      */
     public function wc_save_custom_created_term($term_id, $tt_id, $taxonomy) {
-        // Verify nonce for security
+
         if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'save_term_meta_nonce')) {
             wp_die(esc_html__('Security check failed', 'product-variation-table-with-quick-cart'));
         }
@@ -320,7 +320,7 @@ class QUICK_admin{
      * @since 1.0.3
      */
     public function wc_save_custom_edit_term($term_id, $tt_id, $taxonomy) {
-        // Verify nonce for security
+
         if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'edit_term_meta_nonce')) {
         }
 
@@ -396,7 +396,7 @@ class QUICK_admin{
         $display_type = get_option( 'wc_attribute_display_type_' . $attribute_id );
 
         if ($column_name === 'color' && $display_type === 'color') {
-            $color = get_term_meta($term_id, 'term_color', true);
+            $color          = get_term_meta($term_id, 'term_color', true);
             $secondaryColor = get_term_meta($term_id, 'term_secondary_color', true);
             if ($color) {
                 if ($secondaryColor) {
@@ -423,10 +423,15 @@ class QUICK_admin{
             }
         }
         if ($column_name === 'image' && $display_type === 'image') {
-            $image = get_term_meta($term_id, 'term_image', true);
+            $image    = get_term_meta($term_id, 'term_image', true);
+            $image_id = attachment_url_to_postid($image);
+
+
             if ($image) {
-                $content = '<img src="' . esc_url($image) . '" alt="' . esc_attr__('Term Image', 'product-variation-table-with-quick-cart') . '" style="max-width: 50px; height: auto;">';
-            } else {
+                $content = wp_get_attachment_image($image_id, 'thumbnail', false, [
+                    'alt'   => esc_attr__('Term Image', 'product-variation-table-with-quick-cart'),
+                    'style' => 'max-width: 50px; height: auto;',
+                ]);            } else {
                 $content = __('—', 'product-variation-table-with-quick-cart');
             }
         }

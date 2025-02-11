@@ -3,14 +3,20 @@ jQuery(document).ready(function ($) {
     // Attribute Section Start
 
     jQuery(document).ready(function ($) {
+
+        var previewDiv = $('#term_image_preview_render_from_js');
+        var imageUrl = previewDiv.data('image-url');
+
+        if (imageUrl){
+            previewDiv.html('<img id="term_image_preview" src="' + imageUrl + '" alt="Selected Image" style="max-width: 70px; height: auto; display: block; margin-bottom: 10px; border: 1px solid lightgrey; border-radius: 5px">');
+        }
+
         // Remove Image
         $(document).on('click', '#upload_image_button_remove', function (e) {
             e.preventDefault();
 
-            // Clear the hidden input value
             $('#term_image').val('');
 
-            // Hide the preview image
             $('#term_image_preview').attr('src', '').hide();
         });
 
@@ -29,9 +35,9 @@ jQuery(document).ready(function ($) {
                     $('#term_image').val(image_url);
 
                     // Update or show the preview image
-                    var previewImage = $('#term_image_preview');
-                    previewImage.attr('src', image_url); // Set the image URL
-                    previewImage.show(); // Ensure the image is visible
+                    var previewDiv = $('#term_image_preview_render_from_js');
+                    previewDiv.html('<img id="term_image_preview" src="' + image_url + '" alt="Selected Image" style="max-width: 70px; height: auto; display: block; margin-bottom: 10px; border: 1px solid lightgrey; border-radius: 5px">');
+
                 });
         });
     });
@@ -46,10 +52,8 @@ jQuery(document).ready(function ($) {
             }).open()
                 .on('select', function () {
                     var uploaded_image = image.state().get('selection').first().toJSON();
-                    console.log(uploaded_image)
-                    var image_url = uploaded_image.url;
+                    var image_url      = uploaded_image.url;
 
-                    // Set the image URL to the hidden input field
                     $('#term_image_add_new').val(image_url);
 
                     // Update or show the preview image
@@ -73,11 +77,11 @@ jQuery(document).ready(function ($) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    var helpButton = document.querySelector('.help-button-carousel');
+    var helpButton         = document.querySelector('.help-button-carousel');
     var helpImageContainer = document.querySelector('.help-image');
-    var popup = document.getElementById('popup-container');
-    var imageSrc = popup.getAttribute('value');
-    var closeBtn = document.querySelector('.close');
+    var popup              = document.getElementById('popup-container');
+    var imageSrc    = popup.getAttribute('value');
+    var closeBtn           = document.querySelector('.close');
 
     helpButton.addEventListener('click', function() {
         // Clear existing content to avoid duplicating the image
